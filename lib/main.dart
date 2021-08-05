@@ -5,7 +5,8 @@ import 'create_quiz/quiz_info.dart';
 import 'create_quiz/providers/quiz.dart';
 import 'create_quiz/add_question.dart';
 import 'create_quiz/quiz_credintials.dart';
-
+import './see_stats/go_to_quiz_stats.dart';
+import './see_stats/stats_screen.dart';
 void main() {
   runApp(MyApp());
 }
@@ -26,7 +27,9 @@ class MyApp extends StatelessWidget {
           '/': (ctx) => EntryScreen(),
           QuizInfo.route: (ctx) => QuizInfo(),
           AddQuestion.route: (ctx) => AddQuestion(),
-          QuizCredintials.route : (ctx) => QuizCredintials()
+          QuizCredintials.route : (ctx) => QuizCredintials(),
+          GoToQuizStats.route : (ctx) => GoToQuizStats(),
+          QuizStatsScreen.route : (ctx) => QuizStatsScreen()
         },
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/quiz.dart';
 
+// ignore: must_be_immutable
 class OptionTile extends StatefulWidget {
   Question question;
   Option option;

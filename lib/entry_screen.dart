@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'create_quiz/quiz_info.dart';
-
+import './see_stats/go_to_quiz_stats.dart';
 class EntryScreen extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -9,7 +9,7 @@ class EntryScreen extends StatelessWidget {
       const cornerRadius = Radius.circular(10.0);
       return GestureDetector(
         onTap: (){
-          Navigator.of(context).popAndPushNamed(rout);
+          Navigator.of(context).pushNamed(rout);
         },
         child: Container(
           padding: EdgeInsets.all(20),
@@ -53,7 +53,7 @@ class EntryScreen extends StatelessWidget {
         children: [
           modeButton('Take a quiz', Icons.quiz,''),
           modeButton('Create a quiz', Icons.school,QuizInfo.route),
-          modeButton('see quiz stats', Icons.stacked_bar_chart,'')
+          modeButton('see quiz stats', Icons.stacked_bar_chart,GoToQuizStats.route)
         ],
       ),
     );

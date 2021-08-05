@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'providers/quiz.dart';
 import 'quiz_info_form.dart';
 
 class QuizInfo extends StatelessWidget {

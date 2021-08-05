@@ -14,7 +14,7 @@ class AddQuestion extends StatefulWidget {
 class _AddQuestionState extends State<AddQuestion> {
   final form = GlobalKey<FormState>();
 
-  String question_string = '';
+  String questionString = '';
 
   final question = Question();
 
@@ -43,7 +43,7 @@ class _AddQuestionState extends State<AddQuestion> {
       return true;
     }
     void saveQuestion(){
-      question.setQuestionValue(question_string);
+      question.setQuestionValue(questionString);
       quiz.saveQuestion(question);
     }
     void saveForm() {
@@ -89,7 +89,7 @@ class _AddQuestionState extends State<AddQuestion> {
                               return null;
                             },
                             onChanged: (val) {
-                              question_string = val;
+                              questionString = val;
                             }),
                       ),
                     ),
