@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/quiz.dart';
+import '../providers/quiz_creator.dart';
 import 'add_question.dart';
 class QuizInfoForm extends StatefulWidget {
   @override
@@ -10,6 +10,7 @@ class QuizInfoForm extends StatefulWidget {
 class _QuizInfoFormState extends State<QuizInfoForm> {
   @override
   Widget build(BuildContext context) {
+    final quiz = Provider.of<QuizCreator>(context,listen: false);
     final form = GlobalKey<FormState>();
     Map<String,String> quizInfo = {};
 
@@ -18,7 +19,6 @@ class _QuizInfoFormState extends State<QuizInfoForm> {
       if (!isValid) {
         return;
       }
-      final quiz = Provider.of<QuizCreator>(context,listen: false);
       quiz.saveQuizInfo(quizInfo);
       form.currentState.save();
       print(quiz.quizInfo);
@@ -79,6 +79,7 @@ class _QuizInfoFormState extends State<QuizInfoForm> {
                 child: ElevatedButton(
                     onPressed: () {
                       saveForm();
+                      quiz.clearQuizData();
                     },
                     style: ButtonStyle(
                         backgroundColor: MaterialStateColor.resolveWith(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/quiz.dart';
+import '../providers/quiz_creator.dart';
 
 // ignore: must_be_immutable
 class OptionTile extends StatefulWidget {

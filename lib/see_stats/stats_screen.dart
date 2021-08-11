@@ -8,10 +8,10 @@ const dummyResult = [
   {'name': 'test 5', 'result': 1},
   {'name': 'test 6', 'result': 8},
 ];
-
-double foramtPercent(double perc){
+double foramtPercent(double perc) {
   return double.parse(perc.toStringAsFixed(2));
 }
+
 class Result {
   String name;
   int result;
@@ -58,9 +58,9 @@ class QuizStatsScreen extends StatelessWidget {
   }
 
   Widget myTableCell(String text) {
-    return Container(
-      padding: EdgeInsets.all(5),
-      child: TableCell(
+    return TableCell(
+      child: Padding(
+        padding: EdgeInsets.all(5),
         child: Text(
           text,
           textAlign: TextAlign.center,
@@ -89,7 +89,9 @@ class QuizStatsScreen extends StatelessWidget {
           backgroundColor: Theme.of(context).primaryColor,
           title: Text(quizStats.quizName),
         ),
-        body: Column(
+        body: 
+        quizStats.results.length > 0?
+        Column(
           children: [
             Container(
               margin: EdgeInsets.fromLTRB(15, 15, 15, 0),
@@ -132,6 +134,8 @@ class QuizStatsScreen extends StatelessWidget {
                   ]),
             )
           ],
-        ));
+        )
+        :Text('Sorry nobody have taken this quiz yet')
+        );
   }
 }

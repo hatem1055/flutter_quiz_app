@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'providers/quiz.dart';
+import '../providers/quiz_creator.dart';
 import 'options_tile.dart';
 import 'quiz_credintials.dart';
 
@@ -110,7 +110,7 @@ class _AddQuestionState extends State<AddQuestion> {
                         style: ButtonStyle(
                             backgroundColor: MaterialStateColor.resolveWith(
                                 (states) => Theme.of(context).primaryColor)),
-                        child: Text('Next Question'))),
+                        child: Text('Add another Question'))),
                 if (quiz.questionCount >= 1)
                   Container(
                       height: 40,

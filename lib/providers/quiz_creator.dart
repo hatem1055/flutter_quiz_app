@@ -86,4 +86,8 @@ class QuizCreator with ChangeNotifier {
       'password':'asfjbsafasfsa',
     };
   }
+
+  void clearQuizData(){
+    this.questions = [];
+  }
 }
