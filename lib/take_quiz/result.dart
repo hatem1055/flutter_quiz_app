@@ -28,9 +28,9 @@ class ResultPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            myText('total questions : ${resultData["total_questons"]}'),
-            myText('right questions : ${resultData["right_questions"]}'),
-            myText('Percentage : ${resultData["percentege"]} %'),
+            myText('total questions : ${resultData["total"]}'),
+            myText('right questions : ${resultData["right"]}'),
+            myText('Percentage : ${resultData["percentage"]} %'),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [

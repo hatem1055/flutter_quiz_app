@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../vars.dart';
 class Option {
   String option;
   String id;
@@ -33,12 +35,14 @@ class Question extends ChangeNotifier {
 
 class TheQuizProvider extends ChangeNotifier {
   String name;
+  String id;
   String desc;
   List<Question> questions = [];
   List<String> choosenOptionsIds = [];
   int questionIndex = 0;
-  void setName(name) {
+  void setNameAndId(name,id) {
     this.name = name;
+    this.id = id;
     notifyListeners();
   }
 
@@ -46,7 +50,7 @@ class TheQuizProvider extends ChangeNotifier {
     for (var question in data['questions']) {
       final questionWillBeAdded = Question(question['question']);
       for (var option in question['options']) {
-        questionWillBeAdded.addOption(option['option'], option['id']);
+        questionWillBeAdded.addOption(option['option'], option['_id']);
       }
       this.questions.add(questionWillBeAdded);
     }
@@ -74,13 +78,15 @@ class TheQuizProvider extends ChangeNotifier {
     return this.questionIndex == this.questions.length - 1;
   }
 
-  Map submitQuiz(){
-    print(choosenOptionsIds);
-    return {
-      'total_questons':3,
-      'right_questions':2,
-      'percentege':(3/2) * 100,
-      'quiz_name':this.name
-    };
+  Future<Map> submitQuiz(String quizTakerName)async{
+    String reqBody = json.encode({
+      'quiz_id': this.id,
+      'name': quizTakerName,
+      'options_ids':this.choosenOptionsIds
+    });
+    final http.Response res = await http.post('${Vars.url}/create_result',body: reqBody,headers: Vars.headers);
+    Map output = json.decode(res.body);
+    output['quiz_name'] = this.name;
+    return output;
   }
 }

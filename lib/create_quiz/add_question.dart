@@ -116,10 +116,10 @@ class _AddQuestionState extends State<AddQuestion> {
                       height: 40,
                       margin: EdgeInsets.all(10),
                       child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async{
                             if(questionValidation()){
                               saveQuestion();
-                              Map credintials = quiz.submitQuiz();
+                              Map credintials = await quiz.submitQuiz();
                               Navigator.popAndPushNamed(context, QuizCredintials.route,arguments: credintials);
                             }
                           },

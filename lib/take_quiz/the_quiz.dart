@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/the_quiz_provider.dart';
+import '../providers/credintials_data.dart';
 import '../widgets/my_card.dart';
 import 'options.dart';
 import './result.dart';
@@ -11,6 +12,7 @@ class TheQuiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theQuiz = Provider.of<TheQuizProvider>(context);
+    final credintialsAndData = Provider.of<CredintialsAndData>(context);
     bool questionValidation() {
       if (theQuiz.currentQuestion.validateQuestion() != false) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -67,10 +69,10 @@ class TheQuiz extends StatelessWidget {
                         height: 40,
                         margin: EdgeInsets.all(10),
                         child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (questionValidation()) {
                                 theQuiz.saveAnswere();
-                                Map result = theQuiz.submitQuiz();
+                                Map result = await theQuiz.submitQuiz(credintialsAndData.quizTakerName);
                                 Navigator.popAndPushNamed(
                                     context, ResultPage.route,
                                     arguments: result);

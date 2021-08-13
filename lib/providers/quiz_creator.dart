@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import '../vars.dart';
 class Option {
   String option;
   bool isRight;
@@ -44,9 +46,9 @@ class Question with ChangeNotifier {
     if (this.optionsLength < 2) {
       return 'please add at least two options';
     }
-    Option rightOption = this
-        .options
-        .firstWhere((element) => element.id == rightOptionId, orElse: () => null);
+    Option rightOption = this.options.firstWhere(
+        (element) => element.id == rightOptionId,
+        orElse: () => null);
     if (rightOption == null) {
       return 'please specify the right answere';
     }
@@ -75,19 +77,26 @@ class QuizCreator with ChangeNotifier {
     return this.questions.length;
   }
 
-  void saveQuestion(Question question){
+  void saveQuestion(Question question) {
     this.questions.add(question);
   }
 
-  Map submitQuiz(){
-    print(questions.map((e) => e.question));
-    return {
-      'code':'fsjagf218y1',
-      'password':'asfjbsafasfsa',
-    };
+  Future<Map> submitQuiz() async{
+    String reqBody = json.encode({
+      'name': this.quizName,
+      'desc': this.quizDesc,
+      'questions': this.questions.map((q) => {
+            "question": q.question,
+            "options":
+                q.options.map((o) => {"option": o.option, "isRight": o.isRight}).toList()
+          }).toList()
+    });
+    final http.Response res = await http.post('${Vars.url}/create_quiz',body: reqBody,headers: Vars.headers);
+
+    return json.decode(res.body);
   }
 
-  void clearQuizData(){
+  void clearQuizData() {
     this.questions = [];
   }
 }

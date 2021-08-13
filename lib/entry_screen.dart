@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'create_quiz/quiz_info.dart';
 import './see_stats/go_to_quiz_stats.dart';
-import './take_quiz/go_to_quiz.dart';
+import 'take_quiz/go_to_name.dart';
 class EntryScreen extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -52,7 +52,7 @@ class EntryScreen extends StatelessWidget {
       body: GridView.count(
         crossAxisCount: 3,
         children: [
-          modeButton('Take a quiz', Icons.quiz,GoToQuiz.route),
+          modeButton('Take a quiz', Icons.quiz,GoToName.route),
           modeButton('Create a quiz', Icons.school,QuizInfo.route),
           modeButton('see quiz stats', Icons.stacked_bar_chart,GoToQuizStats.route)
         ],

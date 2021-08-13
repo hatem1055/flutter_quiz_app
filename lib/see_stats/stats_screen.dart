@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/credintials_data.dart';
 
 const dummyResult = [
   {'name': 'test 1', 'result': 7},
@@ -16,10 +18,8 @@ class Result {
   String name;
   int result;
   int fullmark;
-  Result(this.fullmark, this.name, this.result);
-  double get percentage {
-    return foramtPercent((this.result / this.fullmark) * 100);
-  }
+  double percentage;
+  Result(this.fullmark, this.name, this.result, this.percentage);
 }
 
 class QuizStats {
@@ -40,22 +40,19 @@ class QuizStats {
   }
 }
 
-List<Result> dataToResults(data, fullmark) {
+List<Result> dataToResults(data) {
   List<Result> results = [];
   for (Map result in data) {
-    results.add(Result(fullmark, result['name'], result['result']));
+    final percentage = result['percentage'].toDouble();
+    results.add(Result(result['total'], result['name'], result['right'],
+        foramtPercent(percentage)));
+    print('after');
   }
   return results;
 }
 
 class QuizStatsScreen extends StatelessWidget {
   static const route = '/stats';
-  getQuizStats(id) {
-    if (id != null) {
-      return QuizStats(10, 'Test Quiz', dataToResults(dummyResult, 10));
-    }
-    return false;
-  }
 
   Widget myTableCell(String text) {
     return TableCell(
@@ -72,8 +69,11 @@ class QuizStatsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String quizId = ModalRoute.of(context).settings.arguments as String;
-    QuizStats quizStats = getQuizStats(quizId);
+    List results = ModalRoute.of(context).settings.arguments as List;
+    final credintialsAndData = Provider.of<CredintialsAndData>(context);
+
+    QuizStats quizStats = QuizStats(results[0]['total'],
+        credintialsAndData.quizData['quiz_name'], dataToResults(results));
     List<TableRow> relsutsRows() {
       return quizStats.results
           .map((e) => TableRow(children: [
@@ -89,53 +89,52 @@ class QuizStatsScreen extends StatelessWidget {
           backgroundColor: Theme.of(context).primaryColor,
           title: Text(quizStats.quizName),
         ),
-        body: 
-        quizStats.results.length > 0?
-        Column(
-          children: [
-            Container(
-              margin: EdgeInsets.fromLTRB(15, 15, 15, 0),
-              child: Table(
-                border: TableBorder.all(),
-                columnWidths: const <int, TableColumnWidth>{
-                  0: FlexColumnWidth(40),
-                  1: FlexColumnWidth(40),
-                  2: FixedColumnWidth(100),
-                },
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        body: quizStats.results.length > 0
+            ? Column(
                 children: [
-                  TableRow(children: [
-                    myTableCell('name'),
-                    myTableCell('result'),
-                    myTableCell('percentage')
-                  ]),
-                  ...relsutsRows(),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(15, 15, 15, 0),
+                    child: Table(
+                      border: TableBorder.all(),
+                      columnWidths: const <int, TableColumnWidth>{
+                        0: FlexColumnWidth(40),
+                        1: FlexColumnWidth(40),
+                        2: FixedColumnWidth(100),
+                      },
+                      defaultVerticalAlignment:
+                          TableCellVerticalAlignment.middle,
+                      children: [
+                        TableRow(children: [
+                          myTableCell('name'),
+                          myTableCell('result'),
+                          myTableCell('percentage')
+                        ]),
+                        ...relsutsRows(),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(15, 0, 15, 15),
+                    child: Table(
+                        border: TableBorder(
+                            bottom: BorderSide(),
+                            left: BorderSide(),
+                            horizontalInside: BorderSide(),
+                            verticalInside: BorderSide(),
+                            right: BorderSide()),
+                        columnWidths: const <int, TableColumnWidth>{
+                          0: FlexColumnWidth(40),
+                          1: FixedColumnWidth(140),
+                        },
+                        children: [
+                          TableRow(children: [
+                            myTableCell('Seccess Percent'),
+                            myTableCell('${quizStats.successPrecent} %')
+                          ])
+                        ]),
+                  )
                 ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(15, 0, 15, 15),
-              child: Table(
-                  border: TableBorder(
-                      bottom: BorderSide(),
-                      left: BorderSide(),
-                      horizontalInside:BorderSide() ,
-                      verticalInside: BorderSide() ,
-                      right: BorderSide()),
-                  columnWidths: const <int, TableColumnWidth>{
-                    0: FlexColumnWidth(40),
-                    1: FixedColumnWidth(140),
-                  },
-                  children: [
-                    TableRow(children: [
-                      myTableCell('Seccess Percent'),
-                      myTableCell('${quizStats.successPrecent} %')
-                    ])
-                  ]),
-            )
-          ],
-        )
-        :Text('Sorry nobody have taken this quiz yet')
-        );
+              )
+            : Text('Sorry nobody have taken this quiz yet'));
   }
 }

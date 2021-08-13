@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:quizzy/providers/credintials_data.dart';
 
 // ignore: must_be_immutable
 class GoToWidget extends StatelessWidget {
@@ -18,6 +20,7 @@ class GoToWidget extends StatelessWidget {
   TextEditingController password = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final credintialsAndData = Provider.of<CredintialsAndData>(context);
     return Column(
       children: [
         Container(
@@ -25,6 +28,9 @@ class GoToWidget extends StatelessWidget {
           child: TextField(
             controller: password,
             autofocus: true,
+            onChanged: (val){
+              credintialsAndData.setGoToTextField(val);
+            },
             decoration: InputDecoration(
               labelText: placeholder,
               labelStyle: TextStyle(color: Colors.grey),
@@ -40,10 +46,11 @@ class GoToWidget extends StatelessWidget {
                 height: 40,
                 margin: EdgeInsets.all(10),
                 child: ElevatedButton(
-                    onPressed: () {
-                      if (checkValidity() != false) {
+                    onPressed: () async {
+                      final checkAvilabilityInfo = await checkValidity();
+                      if (checkAvilabilityInfo != false && password.value.text.isNotEmpty) {
                         Navigator.popAndPushNamed(context, goToRoute,
-                            arguments: checkValidity());
+                            arguments: checkAvilabilityInfo);
                         setData();
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
