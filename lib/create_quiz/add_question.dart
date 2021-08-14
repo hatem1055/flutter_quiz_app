@@ -59,6 +59,7 @@ class _AddQuestionState extends State<AddQuestion> {
         Navigator.of(context).popAndPushNamed(AddQuestion.route);
         return isValid;
       }
+      return false;
     }
 
     InputDecoration singleLineInputStyle(label) => InputDecoration(
