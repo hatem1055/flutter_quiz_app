@@ -10,12 +10,21 @@ class QuizCredintials extends StatelessWidget {
     final credentials = ModalRoute.of(context).settings.arguments as Map;
     final quiz = Provider.of<QuizCreator>(context, listen: false);
 
-    Widget myText(String text,String textToCopy) {
+    Widget myText(String text,String whatCopied,String textToCopy) {
       return ListTile(
         title: Text(text),
         trailing: IconButton(
             onPressed: () {
               Clipboard.setData(ClipboardData(text: textToCopy));
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('$whatCopied have been copied to the clopboard'),
+                action: SnackBarAction(
+                  label: 'Ok',
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                ),
+              ));
             },
             icon: Icon(Icons.copy)),
       );
@@ -29,8 +38,9 @@ class QuizCredintials extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          myText('Code : ${credentials["code"]}',credentials["code"]),
-          myText('Password : ${credentials["password"]}',credentials["password"]),
+          myText('Code : ${credentials["code"]}','code', credentials["code"]),
+          myText(
+              'Password : ${credentials["password"]}','password',credentials["password"]),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

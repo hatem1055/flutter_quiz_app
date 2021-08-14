@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../vars.dart';
+
 class Option {
   String option;
   bool isRight;
@@ -13,6 +14,26 @@ class Question with ChangeNotifier {
   String question;
   List<Option> options = [];
   String rightOptionId;
+  String focusedOptionId;
+
+  void changeFocusedOptionId(newId) {
+    this.focusedOptionId = newId;
+    notifyListeners();
+  }
+
+  void reOrderOptions(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+    if (newIndex > this.options.length - 1 ||
+        oldIndex > this.options.length - 1) {
+      return;
+    }
+    final oldElement = this.options[oldIndex];
+    this.options.removeAt(oldIndex);
+    this.options.insert(newIndex, oldElement);
+    notifyListeners();
+  }
 
   void addOption(Option option) {
     this.options.add(option);
@@ -81,17 +102,22 @@ class QuizCreator with ChangeNotifier {
     this.questions.add(question);
   }
 
-  Future<Map> submitQuiz() async{
+  Future<Map> submitQuiz() async {
     String reqBody = json.encode({
       'name': this.quizName,
       'desc': this.quizDesc,
-      'questions': this.questions.map((q) => {
-            "question": q.question,
-            "options":
-                q.options.map((o) => {"option": o.option, "isRight": o.isRight}).toList()
-          }).toList()
+      'questions': this
+          .questions
+          .map((q) => {
+                "question": q.question,
+                "options": q.options
+                    .map((o) => {"option": o.option, "isRight": o.isRight})
+                    .toList()
+              })
+          .toList()
     });
-    final http.Response res = await http.post('${Vars.url}/create_quiz',body: reqBody,headers: Vars.headers);
+    final http.Response res = await http.post('${Vars.url}/create_quiz',
+        body: reqBody, headers: Vars.headers);
 
     return json.decode(res.body);
   }

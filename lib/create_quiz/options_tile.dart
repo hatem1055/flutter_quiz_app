@@ -6,7 +6,8 @@ import '../providers/quiz_creator.dart';
 class OptionTile extends StatefulWidget {
   Question question;
   Option option;
-  OptionTile(this.question, this.option);
+  Key key;
+  OptionTile(this.question, this.option,this.key);
 
   @override
   State<OptionTile> createState() => _OptionTileState();
@@ -26,7 +27,7 @@ class _OptionTileState extends State<OptionTile> {
     }
 
     return RadioListTile(
-      title: isEditing
+      title: isEditing && option.id == widget.question.focusedOptionId
           ? TextField(
               controller: optionValue,
               autofocus: true,
@@ -46,6 +47,7 @@ class _OptionTileState extends State<OptionTile> {
             )
           : GestureDetector(
               onTap: () {
+                widget.question.changeFocusedOptionId(option.id);
                 setState(() {
                   isEditing = true;
                 });
@@ -72,29 +74,37 @@ class OptionsTileList extends StatelessWidget {
   Widget build(BuildContext context) {
     Question question = Provider.of<Question>(context);
     List<Widget> optionsTiles() {
-      return question.options.map((e) => OptionTile(question, e)).toList();
+      return question.options.map((e) => OptionTile(question, e,Key(e.id))).toList();
     }
 
-    return Column(
+    return ReorderableListView(
+      onReorder: (o,n){
+        question.reOrderOptions(o, n);
+      },
       children: [
         ...optionsTiles(),
-        TextButton(
-            onPressed: () {
-              question.addOption(Option('option #${question.optionsLength + 1}',
-                  false, DateTime.now().toString()));
-            },
-            child: Row(
-              children: [
-                Text(
-                  'add Option',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                Icon(
-                  Icons.add,
-                  color: Colors.grey,
-                )
-              ],
-            ))
+        Column(
+          key: Key('add question'),
+          children: [
+            TextButton(
+                onPressed: () {
+                  question.addOption(Option('option #${question.optionsLength + 1}',
+                      false, DateTime.now().toString()));
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      'add Option',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    Icon(
+                      Icons.add,
+                      color: Colors.grey,
+                    )
+                  ],
+                )),
+          ],
+        )
       ],
     );
   }

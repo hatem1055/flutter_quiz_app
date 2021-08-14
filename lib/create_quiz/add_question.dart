@@ -42,19 +42,22 @@ class _AddQuestionState extends State<AddQuestion> {
       }
       return true;
     }
-    void saveQuestion(){
+
+    void saveQuestion() {
       question.setQuestionValue(questionString);
       quiz.saveQuestion(question);
     }
-    void saveForm() {
+
+    bool saveForm() {
       final isValid = form.currentState.validate();
       if (questionValidation()) {
         if (!isValid) {
-          return;
+          return false;
         }
         form.currentState.save();
         saveQuestion();
         Navigator.of(context).popAndPushNamed(AddQuestion.route);
+        return isValid;
       }
     }
 
@@ -66,10 +69,9 @@ class _AddQuestionState extends State<AddQuestion> {
         );
     return Scaffold(
         appBar: AppBar(
-            title: Text(
-                '${quiz.quizInfo['name']} #${quiz.questionCount + 1}'),
+            title: Text('${quiz.quizInfo['name']} #${quiz.questionCount + 1}'),
             backgroundColor: Theme.of(context).primaryColor),
-        body: ListView(
+        body: Column(
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Form(
@@ -95,8 +97,10 @@ class _AddQuestionState extends State<AddQuestion> {
                     ),
                   ],
                 )),
-            ChangeNotifierProvider.value(
-                value: question, child: OptionsTileList()),
+            Expanded(
+              child: ChangeNotifierProvider.value(
+                  value: question, child: OptionsTileList()),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -116,11 +120,13 @@ class _AddQuestionState extends State<AddQuestion> {
                       height: 40,
                       margin: EdgeInsets.all(10),
                       child: ElevatedButton(
-                          onPressed: () async{
-                            if(questionValidation()){
+                          onPressed: () async {
+                            if (questionValidation() && form.currentState.validate()) {
                               saveQuestion();
                               Map credintials = await quiz.submitQuiz();
-                              Navigator.popAndPushNamed(context, QuizCredintials.route,arguments: credintials);
+                              Navigator.popAndPushNamed(
+                                  context, QuizCredintials.route,
+                                  arguments: credintials);
                             }
                           },
                           style: ButtonStyle(
